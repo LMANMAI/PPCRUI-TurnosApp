@@ -1,11 +1,8 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import BottomTabs from '../navigation/BottomTabs';
+import { Redirect } from "expo-router";
+import React from "react";
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <BottomTabs />
-    </NavigationContainer>
-  );
-}
+const App = () => {
+  return <Redirect href={"/(stack)/login"} />;
+};
+
+export default App;

@@ -1,34 +1,43 @@
-import { estilosGlobales } from '../../../styles/estilos_globales';
-import React, { useState } from 'react';
-import { View,Text,TextInput,TouchableOpacity,Image,KeyboardAvoidingView,Platform} from 'react-native';
+import { estilosGlobales } from "../../../styles/estilos_globales";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
 
 type RootStackParamList = {
   Login: undefined;
-  Home: undefined; 
+  Home: undefined;
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 const LoginScreen: React.FC = () => {
-  const [dniOrEmail, setDniOrEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [dniOrEmail, setDniOrEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigation = useNavigation<NavigationProp>();
 
   const handleLogin = () => {
-    console.log('Ingresando con:', dniOrEmail, password);
-    navigation.navigate('Home');
+    console.log("Ingresando con:", dniOrEmail, password);
+    router.replace("/(tabs)/inicio");
   };
 
   return (
     <KeyboardAvoidingView
       style={estilosGlobales.container}
-      behavior={Platform.select({ ios: 'padding', android: undefined })}
+      behavior={Platform.select({ ios: "padding", android: undefined })}
     >
       <Image
-        source={require('../assets/images/logo-ituzaingo.png')}
+        source={require("../../../assets/images/logo-ituzaingo.png")}
         style={estilosGlobales.logo}
         resizeMode="contain"
       />
@@ -52,16 +61,22 @@ const LoginScreen: React.FC = () => {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity onPress={() => console.log('Olvidaste tu contraseña')}>
+      <TouchableOpacity onPress={() => console.log("Olvidaste tu contraseña")}>
         <Text style={estilosGlobales.forgot}>¿Olvidaste la contraseña?</Text>
       </TouchableOpacity>
 
       <View style={estilosGlobales.buttonContainer}>
-        <TouchableOpacity style={estilosGlobales.outlineButton} onPress={() => console.log('Registro')}>
+        <TouchableOpacity
+          style={estilosGlobales.outlineButton}
+          onPress={() => console.log("Registro")}
+        >
           <Text style={estilosGlobales.outlineButtonText}>Registrarme</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={estilosGlobales.primaryButton} onPress={handleLogin}>
+        <TouchableOpacity
+          style={estilosGlobales.primaryButton}
+          onPress={handleLogin}
+        >
           <Text style={estilosGlobales.primaryButtonText}>Ingresar →</Text>
         </TouchableOpacity>
       </View>
