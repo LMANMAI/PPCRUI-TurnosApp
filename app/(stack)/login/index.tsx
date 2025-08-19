@@ -68,7 +68,10 @@ const LoginScreen: React.FC = () => {
       <View style={estilosGlobales.buttonContainer}>
         <TouchableOpacity
           style={estilosGlobales.outlineButton}
-          onPress={() => console.log("Registro")}
+          onPress={() => {
+            router.replace("/(stack)/register");
+            console.log("Registro");
+          }}
         >
           <Text style={estilosGlobales.outlineButtonText}>Registrarme</Text>
         </TouchableOpacity>

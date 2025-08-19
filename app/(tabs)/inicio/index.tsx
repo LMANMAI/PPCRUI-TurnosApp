@@ -1,4 +1,3 @@
-// app/(tabs)/inicio/index.tsx
 import React from "react";
 import {
   SafeAreaView,
