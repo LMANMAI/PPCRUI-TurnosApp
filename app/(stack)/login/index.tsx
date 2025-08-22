@@ -1,5 +1,5 @@
 import { estilosGlobales } from "../../../styles/estilos_globales";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -21,10 +21,32 @@ type RootStackParamList = {
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
+//helpeers
+const isValidEmail = (value: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim().toLowerCase());
+
+const isValidDNI = (value: string) => {
+  const digits = value.replace(/\D/g, "");
+  return digits.length >= 7 && digits.length <= 8;
+};
+
 const LoginScreen: React.FC = () => {
   const [dniOrEmail, setDniOrEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigation = useNavigation<NavigationProp>();
+
+  const isDniOrEmailValid = useMemo(() => {
+    const v = dniOrEmail.trim();
+    if (!v) return false;
+    return isValidDNI(v) || isValidEmail(v);
+  }, [dniOrEmail]);
+
+  const isDisabled = useMemo(() => {
+    return !isDniOrEmailValid || password.trim() === "";
+  }, [isDniOrEmailValid, password]);
+
+  const showDniOrEmailError = dniOrEmail.length > 0 && !isDniOrEmailValid;
 
   const handleLogin = () => {
     console.log("Ingresando con:", dniOrEmail, password);
@@ -44,14 +66,22 @@ const LoginScreen: React.FC = () => {
 
       <Text style={estilosGlobales.label}>Ingresa con DNI o con tu mail</Text>
       <TextInput
-        style={estilosGlobales.input}
-        placeholder="Ej: 01.001.200"
+        style={[
+          estilosGlobales.input,
+          showDniOrEmailError && estilosGlobales.inputError,
+        ]}
+        placeholder="Ej: 12.345.678 o usuario@mail.com"
         value={dniOrEmail}
         onChangeText={setDniOrEmail}
         keyboardType="default"
         autoCapitalize="none"
       />
-
+      {showDniOrEmailError && (
+        <Text style={estilosGlobales.helperError}>
+          Ingresá un DNI válido (7–8 dígitos, con o sin puntos) o un correo
+          válido.
+        </Text>
+      )}
       <Text style={estilosGlobales.label}>Contraseña</Text>
       <TextInput
         style={estilosGlobales.input}
@@ -77,10 +107,16 @@ const LoginScreen: React.FC = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={estilosGlobales.primaryButton}
+          style={[
+            estilosGlobales.primaryButton,
+            isDisabled && estilosGlobales.primaryButtonDisabled,
+          ]}
+          accessibilityState={{ disabled: isDisabled }}
+          activeOpacity={isDisabled ? 1 : 0.7}
+          disabled={isDisabled}
           onPress={handleLogin}
         >
-          <Text style={estilosGlobales.primaryButtonText}>Ingresar →</Text>
+          <Text style={estilosGlobales.primaryButtonText}>Ingresar</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
