@@ -10,18 +10,10 @@ import {
   Platform,
 } from "react-native";
 
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
+import { useAuth } from "../../../context/AuthContext";
 
-type RootStackParamList = {
-  Login: undefined;
-  Home: undefined;
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
-
-//helpeers
+//helpers
 const isValidEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim().toLowerCase());
 
@@ -34,7 +26,7 @@ const LoginScreen: React.FC = () => {
   const [dniOrEmail, setDniOrEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigation = useNavigation<NavigationProp>();
+  const { login, loading } = useAuth();
 
   const isDniOrEmailValid = useMemo(() => {
     const v = dniOrEmail.trim();
@@ -48,9 +40,12 @@ const LoginScreen: React.FC = () => {
 
   const showDniOrEmailError = dniOrEmail.length > 0 && !isDniOrEmailValid;
 
-  const handleLogin = () => {
-    console.log("Ingresando con:", dniOrEmail, password);
-    router.replace("/(tabs)/inicio");
+  const onPressLogin = async () => {
+    const ok = await login({ email: dniOrEmail, password });
+    console.log(ok, "ok");
+    if (ok) {
+      router.replace("/(tabs)/inicio");
+    }
   };
 
   return (
@@ -113,8 +108,8 @@ const LoginScreen: React.FC = () => {
           ]}
           accessibilityState={{ disabled: isDisabled }}
           activeOpacity={isDisabled ? 1 : 0.7}
-          disabled={isDisabled}
-          onPress={handleLogin}
+          onPress={() => onPressLogin()}
+          disabled={isDisabled || loading}
         >
           <Text style={estilosGlobales.primaryButtonText}>Ingresar</Text>
         </TouchableOpacity>
