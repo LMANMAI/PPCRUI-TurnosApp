@@ -4,8 +4,8 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from "react";
-import useFetch from "../hooks/useFetch";
+} from 'react';
+import useFetch from '../hooks/useFetch';
 import {
   saveTokens,
   getAccessToken,
@@ -13,19 +13,19 @@ import {
   saveUser,
   getUser,
   clearSession,
-} from "../auth/tokenStorage";
-import { router } from "expo-router";
-import { USER } from "../config/constants";
+} from '../auth/tokenStorage';
+import { router } from 'expo-router';
+import { USER } from '../config/constants';
 
 type User = {
   id: string;
   email: string;
   fullname: string;
-  profileType: "PATIENT" | "ADMIN" | "EMPLOYEE";
+  profileType: 'PATIENT' | 'ADMIN' | 'EMPLOYEE';
 };
 
 type LoginResponse = { accessToken: string; refreshToken: string; user: User };
-type LoginPayload = { email: string; password: string; orgId?: string };
+type LoginPayload = { identifier: string; password: string; orgId?: string };
 
 type AuthContextType = {
   user: User | null;
@@ -50,8 +50,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     USER.LOGIN_USER,
     {
       useInitialFetch: false,
-      method: "post",
-    }
+      method: 'post',
+    },
   );
 
   //leer tokens + user desde storage
@@ -74,12 +74,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     })();
   }, []);
 
-  const login = async ({ email, password, orgId = "org-1" }: LoginPayload) => {
+  const login = async ({
+    identifier,
+    password,
+    orgId = 'org-1',
+  }: LoginPayload) => {
     setLoading(true);
     try {
-      const res = await loginRequest({ data: { email, password, orgId } });
-      console.log(res, "res");
-      if (!res?.accessToken) throw new Error("Respuesta inválida de login");
+      const res = await loginRequest({ data: { identifier, password, orgId } });
+      console.log(res, 'res');
+      console.log({ identifier, password, orgId }, 'res');
+      console.log(USER.LOGIN_USER, 'USER.LOGIN_USER');
+      if (!res?.accessToken) throw new Error('Respuesta inválida de login');
       await saveTokens(res.accessToken, res.refreshToken);
       await saveUser(res.user);
       setUser(res.user);
@@ -112,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       logout,
       rehydrated,
     }),
-    [user, loading, hasTokens, rehydrated]
+    [user, loading, hasTokens, rehydrated],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

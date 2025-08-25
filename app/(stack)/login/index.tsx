@@ -1,5 +1,5 @@
-import { estilosGlobales } from "../../../styles/estilos_globales";
-import React, { useState, useMemo } from "react";
+import { estilosGlobales } from '../../../styles/estilos_globales';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,23 +8,23 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
+} from 'react-native';
 
-import { router } from "expo-router";
-import { useAuth } from "../../../context/AuthContext";
+import { router } from 'expo-router';
+import { useAuth } from '../../../context/AuthContext';
 
 //helpers
 const isValidEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim().toLowerCase());
 
 const isValidDNI = (value: string) => {
-  const digits = value.replace(/\D/g, "");
+  const digits = value.replace(/\D/g, '');
   return digits.length >= 7 && digits.length <= 8;
 };
 
 const LoginScreen: React.FC = () => {
-  const [dniOrEmail, setDniOrEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [dniOrEmail, setDniOrEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const { login, loading } = useAuth();
 
@@ -35,26 +35,26 @@ const LoginScreen: React.FC = () => {
   }, [dniOrEmail]);
 
   const isDisabled = useMemo(() => {
-    return !isDniOrEmailValid || password.trim() === "";
+    return !isDniOrEmailValid || password.trim() === '';
   }, [isDniOrEmailValid, password]);
 
   const showDniOrEmailError = dniOrEmail.length > 0 && !isDniOrEmailValid;
 
   const onPressLogin = async () => {
-    const ok = await login({ email: dniOrEmail, password });
-    console.log(ok, "ok");
+    const ok = await login({ identifier: dniOrEmail, password });
+    console.log(ok, 'ok');
     if (ok) {
-      router.replace("/(tabs)/inicio");
+      router.replace('/(tabs)/inicio');
     }
   };
 
   return (
     <KeyboardAvoidingView
       style={estilosGlobales.container}
-      behavior={Platform.select({ ios: "padding", android: undefined })}
+      behavior={Platform.select({ ios: 'padding', android: undefined })}
     >
       <Image
-        source={require("../../../assets/images/logo-ituzaingo.png")}
+        source={require('../../../assets/images/logo-ituzaingo.png')}
         style={estilosGlobales.logo}
         resizeMode="contain"
       />
@@ -86,7 +86,7 @@ const LoginScreen: React.FC = () => {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity onPress={() => console.log("Olvidaste tu contraseña")}>
+      <TouchableOpacity onPress={() => console.log('Olvidaste tu contraseña')}>
         <Text style={estilosGlobales.forgot}>¿Olvidaste la contraseña?</Text>
       </TouchableOpacity>
 
@@ -94,8 +94,8 @@ const LoginScreen: React.FC = () => {
         <TouchableOpacity
           style={estilosGlobales.outlineButton}
           onPress={() => {
-            router.replace("/(stack)/register");
-            console.log("Registro");
+            router.replace('/(stack)/register');
+            console.log('Registro');
           }}
         >
           <Text style={estilosGlobales.outlineButtonText}>Registrarme</Text>
