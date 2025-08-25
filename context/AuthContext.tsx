@@ -21,6 +21,7 @@ type User = {
   id: string;
   email: string;
   fullname: string;
+  name?: string;
   profileType: 'PATIENT' | 'ADMIN' | 'EMPLOYEE';
 };
 
