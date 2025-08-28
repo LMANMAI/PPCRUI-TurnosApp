@@ -1,4 +1,3 @@
-// app/(tabs)/inicio/index.tsx
 import React from "react";
 import {
   SafeAreaView,
@@ -9,43 +8,70 @@ import {
   StyleSheet,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useAuth } from "../../../context/AuthContext";
+import { useRouter } from "expo-router";
+
+type IconName = React.ComponentProps<typeof FontAwesome>["name"];
+
+type Action = {
+  key: string;
+  label: string;
+  icon: IconName;
+  route?: string;
+  onPress?: () => void;
+};
+
+const ACTIONS: Action[] = [
+  {
+    key: "turnos",
+    label: "Turnos",
+    icon: "search",
+    route: "/(tabs)/inicio/turnos",
+  },
+  { key: "centros", label: "Centros", icon: "building-o", route: "/cartilla" },
+  { key: "medicos", label: "Médicos", icon: "user-md", route: "/cartilla" },
+  {
+    key: "tramites",
+    label: "Trámites",
+    icon: "file-text-o",
+    route: "/tramites",
+  },
+  {
+    key: "riesgo",
+    label: "Riesgo de vida",
+    icon: "heartbeat",
+    route: "/tramites",
+  },
+  { key: "mas", label: "Más acciones", icon: "plus", route: "/mas" },
+];
 
 const InicioScreen: React.FC = () => {
+  const { user } = useAuth();
+  const router = useRouter();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>¡Bienvenido, Usuario!</Text>
+        <Text style={styles.header}>
+          ¡Bienvenido, {user?.fullname || user?.name}!
+        </Text>
 
         <View style={styles.grid}>
-          <TouchableOpacity style={styles.button}>
-            <FontAwesome name="search" size={24} color="#1A73E8" />
-            <Text style={styles.buttonLabel}>Turnos</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button}>
-            <FontAwesome name="building-o" size={24} color="#1A73E8" />
-            <Text style={styles.buttonLabel}>Centros</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button}>
-            <FontAwesome name="user-md" size={24} color="#1A73E8" />
-            <Text style={styles.buttonLabel}>Médicos</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button}>
-            <FontAwesome name="file-text-o" size={24} color="#1A73E8" />
-            <Text style={styles.buttonLabel}>Trámites</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button}>
-            <FontAwesome name="heartbeat" size={24} color="#1A73E8" />
-            <Text style={styles.buttonLabel}>Riesgo de vida</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button}>
-            <FontAwesome name="plus" size={24} color="#1A73E8" />
-            <Text style={styles.buttonLabel}>Más acciones</Text>
-          </TouchableOpacity>
+          {ACTIONS.map(({ key, label, icon, route, onPress }) => (
+            <TouchableOpacity
+              key={key}
+              style={styles.button}
+              onPress={() =>
+                onPress ? onPress() : route ? router.push(route) : null
+              }
+              accessibilityRole="button"
+              accessibilityLabel={label}
+              hitSlop={8}
+            >
+              <FontAwesome name={icon} size={24} color="#1A73E8" />
+              <Text style={styles.buttonLabel}>{label}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
         <Text style={styles.sectionTitle}>Beneficios</Text>
