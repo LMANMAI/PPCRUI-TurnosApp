@@ -7,32 +7,30 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, rehydrated, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  const PUBLIC_GROUPS = new Set(["(stack)"]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!rehydrated) return;
-    const inAuthGroup = segments[0] === "(auth)";
-    if (!isAuthenticated && !inAuthGroup) router.replace("/(stack)/login");
-    if (isAuthenticated && inAuthGroup) router.replace("/inicio");
+
+    const inPublicGroup = segments.some((seg) => PUBLIC_GROUPS.has(seg));
+
+    if (!isAuthenticated && !inPublicGroup) {
+      router.replace("/(stack)/login");
+    }
+    if (isAuthenticated && inPublicGroup) {
+      router.replace("/(tabs)/inicio");
+    }
   }, [isAuthenticated, rehydrated, segments]);
 
   if (!rehydrated) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#005EB8" />
+        <ActivityIndicator size="large" color="#005E8B" />
       </View>
     );
   }
 
-  return (
-    <>
-      {children}
-      {loading && (
-        <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#005EB8" />
-        </View>
-      )}
-    </>
-  );
+  return <>{children}</>;
 }
 
 export default function RootLayout() {

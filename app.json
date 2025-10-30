@@ -7,11 +7,7 @@
     "icon": "",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+
     "ios": {
       "supportsTablet": true
     },
@@ -25,11 +21,14 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-   "plugins": [
+    "plugins": [
       "expo-router",
-      ["expo-secure-store", {
-        "faceIDPermission": "Permitir el uso de Face ID para autenticación"
-      }]
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": "Permitir el uso de Face ID para autenticación"
+        }
+      ]
     ]
   }
 }

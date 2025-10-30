@@ -12,6 +12,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { estilosGlobales } from "../../../styles/estilos_globales";
+import { router } from "expo-router";
 
 const BARRIOS_MOCK = [
   "Centro",
@@ -30,19 +31,28 @@ const RegisterScreen = () => {
   const [barrio, setBarrio] = useState<string | null>(null);
   const [openBarrio, setOpenBarrio] = useState(false);
 
+  // Solo dígitos (máx 8)
+  const onChangeIdSocial = (t: string) => {
+    const digits = t.replace(/\D/g, "").slice(0, 8);
+    setIdSocial(digits);
+  };
+
+  const goNext = () => {
+    // No pasamos params ni guardamos nada
+    router.push("/(stack)/register-password");
+  };
+
   return (
     <KeyboardAvoidingView
       style={estilosGlobales.container}
       behavior={Platform.select({ ios: "padding", android: undefined })}
     >
-      {/* Logo */}
       <Image
         source={require("../../../assets/images/logo-ituzaingo.png")}
         style={estilosGlobales.logo}
         resizeMode="contain"
       />
 
-      {/* Nombre / Apellido */}
       <View style={local.row}>
         <View style={local.col}>
           <Text style={estilosGlobales.label}>Nombre</Text>
@@ -64,7 +74,6 @@ const RegisterScreen = () => {
         </View>
       </View>
 
-      {/* Identificación social */}
       <Text style={estilosGlobales.label}>
         Ingresa tu identificación social
       </Text>
@@ -72,12 +81,12 @@ const RegisterScreen = () => {
         style={estilosGlobales.input}
         placeholder="Puede ser tu dni"
         value={idSocial}
-        onChangeText={setIdSocial}
-        keyboardType="default"
+        onChangeText={onChangeIdSocial}
+        keyboardType="number-pad" // teclado numérico
+        maxLength={8} // por si acaso
         autoCapitalize="none"
       />
 
-      {/* Email */}
       <Text style={estilosGlobales.label}>Ingresa tu mail</Text>
       <TextInput
         style={estilosGlobales.input}
@@ -88,7 +97,6 @@ const RegisterScreen = () => {
         autoCapitalize="none"
       />
 
-      {/* Select barrio (mock) */}
       <Text style={estilosGlobales.label}>Selecciona tu barrio</Text>
       <TouchableOpacity
         onPress={() => setOpenBarrio(true)}
@@ -101,28 +109,27 @@ const RegisterScreen = () => {
         <Text style={{ fontSize: 16, color: "#9aa0a6" }}>▾</Text>
       </TouchableOpacity>
 
-      {/* Botones */}
       <View style={[estilosGlobales.buttonContainer, { marginTop: 8 }]}>
         <TouchableOpacity
           style={estilosGlobales.outlineButton}
-          onPress={() => console.log("Ya tengo cuenta")}
+          onPress={() => router.replace("/(stack)/login")}
         >
           <Text style={estilosGlobales.outlineButtonText}>Ya tengo cuenta</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={estilosGlobales.primaryButton}
-          onPress={() => console.log("Continuar")}
+          onPress={goNext}
         >
           <Text style={estilosGlobales.primaryButtonText}>Continuar →</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Modal simple para barrios */}
       <Modal visible={openBarrio} transparent animationType="fade">
         <TouchableOpacity
           style={local.modalBackdrop}
           onPress={() => setOpenBarrio(false)}
+          activeOpacity={1}
         >
           <View style={local.modalCard}>
             <FlatList
@@ -151,10 +158,7 @@ const RegisterScreen = () => {
 export default RegisterScreen;
 
 const local = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    gap: 12,
-  },
+  row: { flexDirection: "row", gap: 12 },
   col: { flex: 1 },
   select: {
     flexDirection: "row",
@@ -175,9 +179,6 @@ const local = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e5e7eb",
   },
-  option: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
+  option: { paddingHorizontal: 16, paddingVertical: 12 },
   sep: { height: 1, backgroundColor: "#f1f1f1" },
 });
